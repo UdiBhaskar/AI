@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/notebooks/adapter_tuning_PEFT.html",
       "/notebooks/Logistic Regression summary-Uday.html",
       "/notebooks/KNN-Summary.html",
       "/notebooks/Normalization.html",
