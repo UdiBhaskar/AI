@@ -2,7 +2,10 @@
   {
     "listing": "/index.html",
     "items": [
-      "/notebooks/data-screening.html",
+      "/notebooks/Logistic Regression summary-Uday.html",
+      "/notebooks/KNN-Summary.html",
+      "/notebooks/Normalization.html",
+      "/notebooks/Hypothesis-Testing.html",
       "/notebooks/Effective_Training_and_Debugging_of_a_Neural_Networks.html"
     ]
   }

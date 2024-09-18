@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Uday">
+<meta name="dcterms.date" content="2020-06-20">
+<meta name="description" content="Different types of Normalization layers ( Batch Norm, Layernorm)">
 
-<title>Uday’s AI Blog</title>
+<title>Normalization for Better Generalization and Faster Training – Uday’s AI Blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,27 +23,59 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -68,35 +103,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-title','listing-author','listing-date','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-date","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -130,14 +136,14 @@ window.Quarto = {
 
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Uday’s AI Blog</span>
     </a>
   </div>
@@ -160,212 +166,152 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(5)</span></div><div class="category" data-category="2-sample test">2-sample test <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Batchnorm">Batchnorm <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Debugging NN">Debugging NN <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Hypothesis testing">Hypothesis testing <span class="quarto-category-count">(1)</span></div><div class="category" data-category="KNN">KNN <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Logistic Regression">Logistic Regression <span class="quarto-category-count">(1)</span></div><div class="category" data-category="NLP">NLP <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Neural Network">Neural Network <span class="quarto-category-count">(1)</span></div><div class="category" data-category="anova">anova <span class="quarto-category-count">(1)</span></div><div class="category" data-category="classification">classification <span class="quarto-category-count">(1)</span></div><div class="category" data-category="layernorm">layernorm <span class="quarto-category-count">(1)</span></div><div class="category" data-category="normalization">normalization <span class="quarto-category-count">(1)</span></div><div class="category" data-category="null hypothesis">null hypothesis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="one-sample-test">one-sample-test <span class="quarto-category-count">(1)</span></div><div class="category" data-category="p-value">p-value <span class="quarto-category-count">(1)</span></div><div class="category" data-category="training">training <span class="quarto-category-count">(1)</span></div></div></div>
+    
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Normalization for Better Generalization and Faster Training</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">NLP</div>
+    <div class="quarto-category">Batchnorm</div>
+    <div class="quarto-category">layernorm</div>
+    <div class="quarto-category">normalization</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Different types of Normalization layers ( Batch Norm, Layernorm)
+  </div>
+</div>
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Uday </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 20, 2020</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<section id="batch-normalization" class="level2">
+<h2 class="anchored" data-anchor-id="batch-normalization">Batch Normalization</h2>
+<p>Training Deep Neural Networks is complicated by the fact that the distribution of each layer’s inputs changes during training, as the parameters of the previous layers change. This slows down the training by requiring lower learning rates and careful parameter initialization and makes it notoriously hard to train models with saturating nonlinearities. so to overcome this, we can do a normalization after some layers as below.</p>
+<p><br></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://i.imgur.com/l26z2Zz.png" title="Credit: https://arxiv.org/pdf/2003.07845.pdf" class="img-fluid figure-img"></p>
+<figcaption>BN</figcaption>
+</figure>
+</div>
+<p><br></p>
+<p>It calculates the batch means, std, and using those, normalizes the data then creates running mean and std which will be used in inference. One intuition about why BatchNorm works is that it removes the internal covariance shift. You can check that in the below video.</p>
+<p><br></p>
+<blockquote class="blockquote">
+<p>youtube: https://www.youtube.com/watch?v=nUUqwaxLnWs</p>
+</blockquote>
+<p><br></p>
+<p>Another intuition:</p>
+<p>Batch Normalization normalizes the activations in the intermediate layers. BN primarily enables training with a larger learning rate which is cause for faster convergence and better generalization.</p>
+<p>Larger batch size training may converge to sharp minima. If we converge to sharp minima, generalization capacity may decrease. so noise in the SGD has an important role in regularizing the NN. Similarly, Higher learning rate will bias the network towards wider minima so it will give the better generalization. But, training with a higher learning rate may cause an explosion in the updates.</p>
+<p>If we compare the gradients between with batch normalization and without batch normalization, without batch norm network gradients are larger and heavier tailed as shown below so we can train with larger learning rates with BN.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://i.imgur.com/NuppcAM.png" title="Credit: https://arxiv.org/pdf/1806.02375.pdf" class="img-fluid figure-img"></p>
+<figcaption>BNGradeints</figcaption>
+</figure>
+</div>
+<p><br></p>
+<blockquote class="blockquote">
+<p>Important: BN is widely adopted in computer vision but, it leads to significant performance degradation for NLP. Nowadays Layer Normalization is preferred normalization technique for NLP tasks.</p>
+</blockquote>
+<p><br></p>
+<blockquote class="blockquote">
+<p>Note: BN cannot be applied to online learning tasks. BN cannot applied to extremely large distributed models where the minibatches have to be small. For forward neural networks, BN can be directly applied, because each layer has a fixed number of neurons, and the mean and variance statistics of each neuron in each layer of the network can be directly stored for model prediction, but in the RNNs network, different mini-batch may have different input sequence length, it is difficult to calculate statistical information, and the test sequence length cannot be greater than the maximum training sequence length</p>
+</blockquote>
+<p><br></p>
+<p>You can check the figure below from a paper, which compares the BN in CV and NLP. The differences between running mean/Variance and batch mean/variance exhibit very high variance with extreme outliers in Transformers.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://i.imgur.com/5xCloXd.png" title="Credit: https://arxiv.org/pdf/2003.07845.pdf" class="img-fluid figure-img"></p>
+<figcaption>BN</figcaption>
+</figure>
+</div>
+<div id="cell-7" class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>input_layer <span class="op">=</span> tf.keras.Input(shape<span class="op">=</span>(<span class="dv">6</span>,))</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>bn_layer <span class="op">=</span> tf.keras.layers.BatchNormalization()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>bn_layer_out <span class="op">=</span> bn_layer(input_layer)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Number of weights is'</span>, <span class="bu">len</span>(bn_layer.get_weights()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of weights is 4</code></pre>
+</div>
+</div>
+<p>If we have <code>n</code> features as input to the BN layer, the weight matrix we have to learn is of size <code>(4, n)</code>, i.e.&nbsp;<code>n</code> features for each beta_initializer, gamma_initializer, moving_mean_initializer, moving_variance_initializer. Please read Tensorflow documentation to know more about Training mode, inference mode of the BN layer. It is very important to take care of the mode in BN layer.</p>
+</section>
+<section id="layer-normalization" class="level2">
+<h2 class="anchored" data-anchor-id="layer-normalization">Layer Normalization</h2>
+<p>Unlike Batch normalization, it normalized horizontally i.e.&nbsp;it normalizes each data point. so <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span> not depend on the batch. layer normalization does not have to use “running mean” and “running variance”.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://i.imgur.com/XRuwFls.png" title="Credit: https://papers.nips.cc/paper/8689-understanding-and-improving-layer-normalization.pdf" class="img-fluid figure-img"></p>
+<figcaption>layernorm</figcaption>
+</figure>
+</div>
+<p>It gives the better results because of the gradinets with respect to <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span> in Layer Normalization. Derivative of <span class="math inline">\(\mu\)</span> re-centers network gradients to zero. Derivative of <span class="math inline">\(\sigma\)</span> reduces variance of network gradient, which can be seen a kind of re-scaling.</p>
+<p><br></p>
+<blockquote class="blockquote">
+<p>Important: The parameters of LayerNorm, including the bias and gain, increase the risk of over-fitting, and do not work in most cases. - https://papers.nips.cc/paper/8689-understanding-and-improving-layer-normalization.pdf. You can remove these using <code>center</code>, <code>scale</code> parameters in <code>Tensorflow</code>.</p>
+</blockquote>
+<div id="cell-12" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>input_layer <span class="op">=</span> tf.keras.Input(shape<span class="op">=</span>(<span class="dv">6</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>norm_layer <span class="op">=</span> tf.keras.layers.LayerNormalization(scale<span class="op">=</span><span class="va">False</span>, center<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>norm_layer_out <span class="op">=</span> norm_layer(input_layer)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Number of weights is'</span>, <span class="bu">len</span>(norm_layer.get_weights()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of weights is 0</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Note: If there is no gain and bias, number of weights is zero.</p>
+</blockquote>
+<div id="cell-14" class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>input_layer <span class="op">=</span> tf.keras.Input(shape<span class="op">=</span>(<span class="dv">10</span>,),batch_size<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>norm_layer <span class="op">=</span> tf.keras.layers.LayerNormalization(scale<span class="op">=</span><span class="va">True</span>, center<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>norm_layer_out <span class="op">=</span> norm_layer(input_layer)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Number of weights is'</span>, <span class="bu">len</span>(norm_layer.get_weights()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of weights is 2</code></pre>
+</div>
+</div>
 
 
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-categories="Logistic Regression,classification" data-listing-date-sort="1597104000000" data-listing-file-modified-sort="1726672116993" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="933">
-<a href="./notebooks/Logistic Regression summary-Uday.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://www.jeremyjordan.me/content/images/2017/06/Screen-Shot-2017-06-10-at-9.41.25-AM.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Summary - Logistic Regression Algorithm
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Logistic Regression'); return false;">
-Logistic Regression
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('classification'); return false;">
-classification
-</div>
-</div>
-<div class="card-text listing-description">
-summary and useful points to know about LR
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Uday
-</div>
-<div class="listing-date">
-Aug 11, 2020
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="1" data-categories="KNN" data-listing-date-sort="1597017600000" data-listing-file-modified-sort="1726672116993" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="701">
-<a href="./notebooks/KNN-Summary.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://helloacm.com/wp-content/uploads/2016/03/2012-10-26-knn-concept.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Summary - KNN Algorithm
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('KNN'); return false;">
-KNN
-</div>
-</div>
-<div class="card-text listing-description">
-Training process and useful points to know about KNN
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Uday
-</div>
-<div class="listing-date">
-Aug 10, 2020
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="2" data-categories="NLP,Batchnorm,layernorm,normalization" data-listing-date-sort="1592611200000" data-listing-file-modified-sort="1726672116993" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="604">
-<a href="./notebooks/Normalization.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://img-blog.csdnimg.cn/direct/ed31e95972284f4ca8a7492b0062fd0f.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Normalization for Better Generalization and Faster Training
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('NLP'); return false;">
-NLP
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Batchnorm'); return false;">
-Batchnorm
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('layernorm'); return false;">
-layernorm
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('normalization'); return false;">
-normalization
-</div>
-</div>
-<div class="card-text listing-description">
-Different types of Normalization layers ( Batch Norm, Layernorm)
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Uday
-</div>
-<div class="listing-date">
-Jun 20, 2020
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="3" data-categories="Hypothesis testing,null hypothesis,2-sample test,one-sample-test,p-value,anova" data-listing-date-sort="1592179200000" data-listing-file-modified-sort="1726672116993" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1651">
-<a href="./notebooks/Hypothesis-Testing.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://www.advanceinnovationgroup.com/blog/uploads/images/image_750x_5cc1653c3c4c9.jpg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Hypothesis Testing
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Hypothesis testing'); return false;">
-Hypothesis testing
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('null hypothesis'); return false;">
-null hypothesis
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('2-sample test'); return false;">
-2-sample test
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('one-sample-test'); return false;">
-one-sample-test
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('p-value'); return false;">
-p-value
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('anova'); return false;">
-anova
-</div>
-</div>
-<div class="card-text listing-description">
-Hypothesis testing using permutation
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Uday
-</div>
-<div class="listing-date">
-Jun 15, 2020
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="4" data-categories="Debugging NN,Neural Network,training" data-listing-date-sort="1580688000000" data-listing-file-modified-sort="1726672116989" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14" data-listing-word-count-sort="2771">
-<a href="./notebooks/Effective_Training_and_Debugging_of_a_Neural_Networks.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://media.geeksforgeeks.org/wp-content/uploads/20190902105053/Debugging-Tips-To-Get-Better-At-It.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Effective Training and Debugging of a Neural Networks
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Debugging NN'); return false;">
-Debugging NN
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Neural Network'); return false;">
-Neural Network
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('training'); return false;">
-training
-</div>
-</div>
-<div class="card-text listing-description">
-Proper ways to training and debugging of a neural network
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Uday
-</div>
-<div class="listing-date">
-Feb 3, 2020
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</section>
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

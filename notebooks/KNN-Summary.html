@@ -6,8 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Uday">
+<meta name="dcterms.date" content="2020-08-10">
+<meta name="description" content="Training process and useful points to know about KNN">
 
-<title>Uday’s AI Blog</title>
+<title>Summary - KNN Algorithm – Uday’s AI Blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,24 +26,22 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -68,35 +69,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-title','listing-author','listing-date','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-title","listing-author","listing-date","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -130,14 +102,14 @@ window.Quarto = {
 
 </head>
 
-<body class="nav-fixed">
+<body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Uday’s AI Blog</span>
     </a>
   </div>
@@ -160,212 +132,139 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(5)</span></div><div class="category" data-category="2-sample test">2-sample test <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Batchnorm">Batchnorm <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Debugging NN">Debugging NN <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Hypothesis testing">Hypothesis testing <span class="quarto-category-count">(1)</span></div><div class="category" data-category="KNN">KNN <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Logistic Regression">Logistic Regression <span class="quarto-category-count">(1)</span></div><div class="category" data-category="NLP">NLP <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Neural Network">Neural Network <span class="quarto-category-count">(1)</span></div><div class="category" data-category="anova">anova <span class="quarto-category-count">(1)</span></div><div class="category" data-category="classification">classification <span class="quarto-category-count">(1)</span></div><div class="category" data-category="layernorm">layernorm <span class="quarto-category-count">(1)</span></div><div class="category" data-category="normalization">normalization <span class="quarto-category-count">(1)</span></div><div class="category" data-category="null hypothesis">null hypothesis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="one-sample-test">one-sample-test <span class="quarto-category-count">(1)</span></div><div class="category" data-category="p-value">p-value <span class="quarto-category-count">(1)</span></div><div class="category" data-category="training">training <span class="quarto-category-count">(1)</span></div></div></div>
+    
 <!-- main -->
-<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Summary - KNN Algorithm</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">KNN</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Training process and useful points to know about KNN
+  </div>
+</div>
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Uday </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 10, 2020</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<section id="terminology" class="level2">
+<h2 class="anchored" data-anchor-id="terminology">Terminology</h2>
+<p><span class="math inline">\(N\)</span> - Number of data points<br>
+<span class="math inline">\(X_q\)</span> - query data points<br>
+<span class="math inline">\(X_{qn}\)</span> - nth query data point<br>
+<span class="math inline">\(X\)</span> - input train data<br>
+<span class="math inline">\(D\)</span> - dimensionality of data<br>
+<span class="math inline">\(C\)</span> - Number of classes<br>
+<span class="math inline">\(C_i\)</span> - i^th class<br>
+<span class="math inline">\(N_k\)</span> - K nearst neighbors<br>
+<span class="math inline">\(m\)</span> - Number of epochs in SGD</p>
+<p>This blog was originally published in <a href="https://applied-ai-course.github.io/blog/knn/2020/08/10/KNN-Summary.html">this</a> link.</p>
+</section>
+<section id="algorithm" class="level2">
+<h2 class="anchored" data-anchor-id="algorithm">Algorithm</h2>
+<ul>
+<li>Given a query point <span class="math inline">\(X_{qn}\)</span>, find the <span class="math inline">\(k\)</span> nearest points in <span class="math inline">\(X\)</span>. (You can use any distance metric)</li>
+<li>Count which class has maximum points in those <span class="math inline">\(k\)</span> nearest points and classify given query point <span class="math inline">\(X_{qn}\)</span> belongs to the same class. We can give weightage to the nearest points based on the distance (any function of distance).</li>
+<li>Probability of belonging to the specific class in a classification scenario is</li>
+</ul>
+<p><br></p>
+<p><span class="math display">\[\begin{align}
+P(Y=C_i|X_q) = \frac{1}{K}\sum_{i\epsilon N_k}I(y_i==C_i) \\I(true) = 1, I(false) = 0
+\end{align}\]</span></p>
+<p><br></p>
+<ul>
+<li>If we use KNN to solve the regression problem, we can get the average of nearest points and gives as output.</li>
+</ul>
+<p><br></p>
+<p><span class="math display">\[\begin{align}
+Y_{X_q} = \frac{1}{K}\sum_{i\epsilon N_k}y_i
+\end{align}\]</span></p>
+<p><br></p>
+</section>
+<section id="useful-points-to-know" class="level2">
+<h2 class="anchored" data-anchor-id="useful-points-to-know">Useful points to know</h2>
+<ul>
+<li><p>There is no need for any specific process to work with multi-class classification because it works based on nearest neighbors.</p></li>
+<li><p>There is no need for training if we want to use brute force search to get k-nearest neighbors. If we want to use Tree-based/LSH based/graph-based searching, we have to create a corresponding Tree/LSH forest/graph in the training time.</p></li>
+<li><p>Testing time complexity is <span class="math inline">\(O(ND)\)</span> if we use brute force search, it is very huge if we have more data points to train. If we need less time complexity go for Tree/LSH/graph-based neighbor search. Many tree algorithms give complexity of <span class="math inline">\(O(D*log(N))\)</span>.</p></li>
+</ul>
+<blockquote class="blockquote">
+<p>Important: You can check the benchmarking of NN searching algorithms in <a href="https://arxiv.org/pdf/1807.05614.pdf">this</a> paper and <a href="https://github.com/erikbern/ann-benchmarks">this</a> GitHub</p>
+</blockquote>
+<ul>
+<li><p>It works based on distance measure so scaling the features is very important.</p></li>
+<li><p>Choosing a distance metric is very crucial. If we require a rotation-invariant distance metric then Euclidean distance is one of the best choices. But in high dimensions, a curious phenomenon arises: the ratio between the nearest and farthest points approaches 1, i.e.&nbsp;the points essentially become uniformly distant from each other. This phenomenon can be observed for a wide variety of distance metrics, but it is more pronounced for the Euclidean metric than, say, the Manhattan distance metric. You can read more about this in <a href="https://bib.dbvis.de/uploadedFiles/155.pdf">this</a> paper.</p></li>
+</ul>
+<blockquote class="blockquote">
+<p>Tip: High-dimensional spaces tend to be extremely sparse, which means that every point is far away from virtually every other point, and hence pairwise distances tend to be uninformative so before applying nearest-neighbor classification it is a good idea to plot a histogram of pairwise distances of a data to see if they are sufficiently varied.</p>
+</blockquote>
+<ul>
+<li><p>High-dimensional spaces may not give better results so using one-hot vectors may not be useful if have more categorical variables. so, try with mean encoding/frequency-based encoding or use dimensionality reduction techniques/feature selection to get the lower dimensionality data.</p></li>
+<li><p>This is not a linear model, so you can classify the non-linear data.</p></li>
+<li><p>An increase in the feature value not always leads to an increase or decrease in the target outcome/probability so, it is not a monotone model.</p></li>
+<li><p>It won’t consider the interaction between the features. We have to create the interaction features if we need it. More interaction features may lead to less interpretability.</p></li>
+</ul>
+</section>
+<section id="hyperparameters" class="level2">
+<h2 class="anchored" data-anchor-id="hyperparameters">Hyperparameters</h2>
+<ul>
+<li>K is the Hyperparameter in K-NN.</li>
+<li>The low value of K will give more variance to the model. increasing the K, reduces the variance, and increases the bias of the model.</li>
+<li>You can check the decision surface of KNN for different K values in the below image. <img src="https://i.imgur.com/2VZs7WW.png" class="img-fluid" alt="BN"></li>
+</ul>
+</section>
+<section id="interpretability" class="level2">
+<h2 class="anchored" data-anchor-id="interpretability">Interpretability</h2>
+<ul>
+<li>There is a lack of global model interpretability because the model is inherently local and there are no global weights or structures explicitly learned.</li>
+<li>We can get interpretability based on the data we have i.e.&nbsp;datapoint <span class="math inline">\(x_1\)</span> is similar to the datapoint <span class="math inline">\(x_2\)</span> and <span class="math inline">\(x_1\)</span> caused <span class="math inline">\(y\)</span> so we predict that <span class="math inline">\(x_2\)</span> will cause <span class="math inline">\(y\)</span> as well. So, we can get the k nearest neighbors and we can analyze/interpret those data points.</li>
+<li>If we have thousands of features, it is very difficult to analyze and get interpretability.</li>
+</ul>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ol type="1">
+<li>https://stackexchange.com/</li>
+<li>https://arxiv.org/pdf/1807.05614.pdf</li>
+<li>https://bib.dbvis.de/uploadedFiles/155.pdf</li>
+<li>https://helloacm.com/wp-content/uploads/2016/03/2012-10-26-knn-concept.png</li>
+</ol>
 
 
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-categories="Logistic Regression,classification" data-listing-date-sort="1597104000000" data-listing-file-modified-sort="1726672116993" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="933">
-<a href="./notebooks/Logistic Regression summary-Uday.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://www.jeremyjordan.me/content/images/2017/06/Screen-Shot-2017-06-10-at-9.41.25-AM.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Summary - Logistic Regression Algorithm
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Logistic Regression'); return false;">
-Logistic Regression
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('classification'); return false;">
-classification
-</div>
-</div>
-<div class="card-text listing-description">
-summary and useful points to know about LR
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Uday
-</div>
-<div class="listing-date">
-Aug 11, 2020
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="1" data-categories="KNN" data-listing-date-sort="1597017600000" data-listing-file-modified-sort="1726672116993" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="701">
-<a href="./notebooks/KNN-Summary.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://helloacm.com/wp-content/uploads/2016/03/2012-10-26-knn-concept.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Summary - KNN Algorithm
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('KNN'); return false;">
-KNN
-</div>
-</div>
-<div class="card-text listing-description">
-Training process and useful points to know about KNN
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Uday
-</div>
-<div class="listing-date">
-Aug 10, 2020
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="2" data-categories="NLP,Batchnorm,layernorm,normalization" data-listing-date-sort="1592611200000" data-listing-file-modified-sort="1726672116993" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="604">
-<a href="./notebooks/Normalization.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://img-blog.csdnimg.cn/direct/ed31e95972284f4ca8a7492b0062fd0f.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Normalization for Better Generalization and Faster Training
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('NLP'); return false;">
-NLP
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Batchnorm'); return false;">
-Batchnorm
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('layernorm'); return false;">
-layernorm
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('normalization'); return false;">
-normalization
-</div>
-</div>
-<div class="card-text listing-description">
-Different types of Normalization layers ( Batch Norm, Layernorm)
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Uday
-</div>
-<div class="listing-date">
-Jun 20, 2020
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="3" data-categories="Hypothesis testing,null hypothesis,2-sample test,one-sample-test,p-value,anova" data-listing-date-sort="1592179200000" data-listing-file-modified-sort="1726672116993" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1651">
-<a href="./notebooks/Hypothesis-Testing.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://www.advanceinnovationgroup.com/blog/uploads/images/image_750x_5cc1653c3c4c9.jpg" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Hypothesis Testing
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Hypothesis testing'); return false;">
-Hypothesis testing
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('null hypothesis'); return false;">
-null hypothesis
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('2-sample test'); return false;">
-2-sample test
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('one-sample-test'); return false;">
-one-sample-test
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('p-value'); return false;">
-p-value
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('anova'); return false;">
-anova
-</div>
-</div>
-<div class="card-text listing-description">
-Hypothesis testing using permutation
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Uday
-</div>
-<div class="listing-date">
-Jun 15, 2020
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-<div class="g-col-1" data-index="4" data-categories="Debugging NN,Neural Network,training" data-listing-date-sort="1580688000000" data-listing-file-modified-sort="1726672116989" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14" data-listing-word-count-sort="2771">
-<a href="./notebooks/Effective_Training_and_Debugging_of_a_Neural_Networks.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top">
-<img loading="lazy" src="https://media.geeksforgeeks.org/wp-content/uploads/20190902105053/Debugging-Tips-To-Get-Better-At-It.png" class="thumbnail-image card-img" style="height: 150px;">
-</p>
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Effective Training and Debugging of a Neural Networks
-</h5>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Debugging NN'); return false;">
-Debugging NN
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('Neural Network'); return false;">
-Neural Network
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('training'); return false;">
-training
-</div>
-</div>
-<div class="card-text listing-description">
-Proper ways to training and debugging of a neural network
-</div>
-<div class="card-attribution card-text-small justify">
-<div class="listing-author">
-Uday
-</div>
-<div class="listing-date">
-Feb 3, 2020
-</div>
-</div>
-</div>
-</div>
-</a>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</section>
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
