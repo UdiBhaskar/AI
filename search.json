@@ -1,0 +1,51 @@
+[
+  {
+    "objectID": "notebooks/data-screening.html",
+    "href": "notebooks/data-screening.html",
+    "title": "Data Screening",
+    "section": "",
+    "text": "Load and review the data, check that dates are loaded properly and filter data down to the events in La Palma only. The dataset itself contains all recent IGN earthquake data for Spanish territory.\nimport pandas as pd\nimport matplotlib.pyplot as plt\ndf = pd.read_csv('../data/catalogoComunSV_1663233588717.csv', sep=';')\ndf.columns = ['Event', 'Date', 'Time', 'Latitude', 'Longitude', 'Depth(km)', 'Intensity','Magnitude', 'Type Mag', 'Location']\ndf['Time'] = df['Time'].str.strip()\ndf['Date'] = df['Date'].str.strip()\ndf['DateTime'] = (df['Date'] + ' ' + df['Time']).apply(pd.to_datetime, format='%d/%m/%Y %H:%M:%S')\ndf['Timestamp'] = pd.to_numeric(pd.to_datetime(df['DateTime']))\ndf['Date'] = pd.to_datetime(df['Date'], format=\"%d/%m/%Y\")\ndf = df.sort_values(by=['DateTime'], ascending=True)\ndf.head()\n\n\n\n\n\n\n\n\nEvent\nDate\nTime\nLatitude\nLongitude\nDepth(km)\nIntensity\nMagnitude\nType Mag\nLocation\nDateTime\nTimestamp\n\n\n\n\n0\nes2017aaaga\n2017-01-01\n00:48:55\n36.6765\n-11.2736\n0.0\n\n2.8\n6\nSW CABO DE SAN VICENTE\n2017-01-01 00:48:55\n1483231735000000000\n\n\n1\nes2017aaakn\n2017-01-01\n01:28:17\n28.1119\n-16.2225\n21.0\n\n0.9\n4\nATLÁNTICO-CANARIAS\n2017-01-01 01:28:17\n1483234097000000000\n\n\n2\nes2017aaang\n2017-01-01\n01:49:08\n42.0648\n-7.8471\n22.0\n\n2.0\n4\nSW RAIRIZ DE VEIGA.OU\n2017-01-01 01:49:08\n1483235348000000000\n\n\n3\nes2017aabdd\n2017-01-01\n02:36:20\n38.3826\n-9.3767\n11.0\n\n2.2\n4\nATLÁNTICO-PORTUGAL\n2017-01-01 02:36:20\n1483238180000000000\n\n\n4\nes2017aabkh\n2017-01-01\n03:35:03\n36.2492\n-7.8227\n13.0\n\n1.9\n4\nGOLFO DE CÁDIZ\n2017-01-01 03:35:03\n1483241703000000000\ndf.describe()\n\n\n\n\n\n\n\n\nLatitude\nLongitude\nDepth(km)\nMagnitude\nType Mag\nTimestamp\n\n\n\n\ncount\n58036.000000\n58036.000000\n58036.000000\n58036.000000\n58036.000000\n5.803600e+04\n\n\nmean\n34.806854\n-8.356855\n11.450831\n1.881846\n4.031153\n1.596182e+18\n\n\nstd\n5.263327\n7.119341\n11.111965\n0.763577\n0.291332\n4.954865e+16\n\n\nmin\n26.349300\n-19.930400\n0.000000\n-0.500000\n3.000000\n1.483232e+18\n\n\n25%\n28.563800\n-16.672325\n3.000000\n1.400000\n4.000000\n1.559327e+18\n\n\n50%\n35.989200\n-4.785250\n10.000000\n1.800000\n4.000000\n1.612319e+18\n\n\n75%\n37.890700\n-3.234500\n14.300000\n2.400000\n4.000000\n1.635568e+18\n\n\nmax\n44.985000\n5.996600\n115.000000\n6.000000\n6.000000\n1.663232e+18\ndf.plot.scatter(x=\"Longitude\", y=\"Latitude\", figsize=(12,12), grid=\"on\");"
+  },
+  {
+    "objectID": "notebooks/data-screening.html#spatial-plot",
+    "href": "notebooks/data-screening.html#spatial-plot",
+    "title": "Data Screening",
+    "section": "Spatial Plot",
+    "text": "Spatial Plot\nScatter plot the spatial locations of events\n\nfrom matplotlib import colormaps\ncmap = colormaps['viridis_r']\nax = df.plot.scatter(x=\"Longitude\", y=\"Latitude\", \n                     s=40-df[\"Depth(km)\"], c=df[\"Magnitude\"], \n                     figsize=(12,10), grid=\"on\", cmap=cmap)\ncolorbar = ax.collections[0].colorbar\ncolorbar.set_label(\"Magnitude\")\n\nplt.show()\n\n\n\n\n\n\n\nFigure 1: Locations of earthquakes on La Palma since 2017.\n\n\n\n\n\n\nTimeline Plot\nScatter plot the event time series and look for any quantization issues. Have times & dates been loaded correctly?\n\nax = df.plot.scatter(x='DateTime', y='Depth(km)', figsize=(20,8))\nax.set_ylim(50,0);\n\n\n\n\n\n\n\n\n\ndf['Swarm'] = 0\ndf.loc[(df['Date'] &gt;= '2017-10-01') & (df['Date'] &lt;= '2017-10-31'), 'Swarm'] = 1\ndf.loc[(df['Date'] &gt;= '2019-02-01') & (df['Date'] &lt;= '2019-02-28'), 'Swarm'] = 2\ndf.loc[(df['Date'] &gt;= '2020-07-21') & (df['Date'] &lt;= '2020-08-05'), 'Swarm'] = 3\ndf.loc[(df['Date'] &gt;= '2020-10-04') & (df['Date'] &lt;= '2020-10-10'), 'Swarm'] = 4\ndf.loc[(df['Date'] &gt;= '2020-10-11') & (df['Date'] &lt;= '2020-10-22'), 'Swarm'] = 5\ndf.loc[(df['Date'] &gt;= '2020-11-15') & (df['Date'] &lt;= '2020-11-29'), 'Swarm'] = 6\ndf.loc[(df['Date'] &gt;= '2020-12-10') & (df['Date'] &lt;= '2020-12-29'), 'Swarm'] = 7\ndf.loc[(df['Date'] &gt;= '2020-12-10') & (df['Date'] &lt;= '2020-12-31'), 'Swarm'] = 8\ndf.loc[(df['Date'] &gt;= '2021-01-15') & (df['Date'] &lt;= '2021-02-07'), 'Swarm'] = 9\ndf.loc[(df['Date'] &gt;= '2021-06-01') & (df['Date'] &lt;= '2021-06-30'), 'Swarm'] = 10\ndf.loc[(df['Date'] &gt;= '2021-07-01'), 'Swarm'] = None\n\n\ndf['Phase'] = 0;\ndf.loc[(df['Date'] &gt;= '2021-09-11') & (df['Date'] &lt;= '2021-09-30'), 'Phase'] = 1\ndf.loc[(df['Date'] &gt;= '2021-10-01') & (df['Date'] &lt;= '2021-11-30'), 'Phase'] = 2\ndf.loc[(df['Date'] &gt;= '2021-12-01') & (df['Date'] &lt;= '2021-12-31'), 'Phase'] = 3\ndf.loc[(df['Date'] &gt;= '2021-12-31'), 'Phase'] = 4\n\n\ndf.to_csv(\"../data/lapalma_ign.csv\", index=False)"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "La Palma Earthquakes",
+    "section": "",
+    "text": "import matplotlib.pyplot as plt\nimport numpy as np\neruptions = [1492, 1585, 1646, 1677, 1712, 1949, 1971, 2021]\n\n\nplt.figure(figsize=(6, 1))\nplt.eventplot(eruptions, lineoffsets=0, linelengths=0.1, color='black')\nplt.gca().axes.get_yaxis().set_visible(False)\nplt.ylabel('')\nplt.show()\n\n\n\n\n\n\n\nFigure 1: Timeline of recent earthquakes on La Palma\n\n\n\n\n\n\navg_years_between_eruptions = np.mean(np.diff(eruptions[:-1]))\navg_years_between_eruptions\n\nBased on data up to and including 1971, eruptions on La Palma happen every 79.8 years on average.\nStudies of the magma systems feeding the volcano, such as Marrero et al. (2019), have proposed that there are two main magma reservoirs feeding the Cumbre Vieja volcano; one in the mantle (30-40km depth) which charges and in turn feeds a shallower crustal reservoir (10-20km depth).\nEight eruptions have been recorded since the late 1400s (Figure 1).\nData and methods are discussed in Section 2.\nLet \\(x\\) denote the number of eruptions in a year. Then, \\(x\\) can be modeled by a Poisson distribution\n\\[\np(x) = \\frac{e^{-\\lambda} \\lambda^{x}}{x !}\n\\tag{1}\\]\nwhere \\(\\lambda\\) is the rate of eruptions per year. Using Equation 1, the probability of an eruption in the next \\(t\\) years can be calculated.\n\n\n\nTable 1: Recent historic eruptions on La Palma\n\n\n\n\n\nName\nYear\n\n\n\n\nCurrent\n2021\n\n\nTeneguía\n1971\n\n\nNambroque\n1949\n\n\nEl Charco\n1712\n\n\nVolcán San Antonio\n1677\n\n\nVolcán San Martin\n1646\n\n\nTajuya near El Paso\n1585\n\n\nMontaña Quemada\n1492\n\n\n\n\n\n\nTable 1 summarises the eruptions recorded since the colonization of the islands by Europeans in the late 1400s.\n\n\n\n\n\n\nFigure 2: Map of La Palma\n\n\n\nLa Palma is one of the west most islands in the Volcanic Archipelago of the Canary Islands (Figure 2).\n\n\n\n\n\n\n\n\n\nFigure 3: Locations of earthquakes on La Palma since 2017.\n\n\n\n\n\nSource: Data Screening\nFigure 3 shows the location of recent Earthquakes on La Palma."
+  },
+  {
+    "objectID": "index.html#introduction",
+    "href": "index.html#introduction",
+    "title": "La Palma Earthquakes",
+    "section": "",
+    "text": "import matplotlib.pyplot as plt\nimport numpy as np\neruptions = [1492, 1585, 1646, 1677, 1712, 1949, 1971, 2021]\n\n\nplt.figure(figsize=(6, 1))\nplt.eventplot(eruptions, lineoffsets=0, linelengths=0.1, color='black')\nplt.gca().axes.get_yaxis().set_visible(False)\nplt.ylabel('')\nplt.show()\n\n\n\n\n\n\n\nFigure 1: Timeline of recent earthquakes on La Palma\n\n\n\n\n\n\navg_years_between_eruptions = np.mean(np.diff(eruptions[:-1]))\navg_years_between_eruptions\n\nBased on data up to and including 1971, eruptions on La Palma happen every 79.8 years on average.\nStudies of the magma systems feeding the volcano, such as Marrero et al. (2019), have proposed that there are two main magma reservoirs feeding the Cumbre Vieja volcano; one in the mantle (30-40km depth) which charges and in turn feeds a shallower crustal reservoir (10-20km depth).\nEight eruptions have been recorded since the late 1400s (Figure 1).\nData and methods are discussed in Section 2.\nLet \\(x\\) denote the number of eruptions in a year. Then, \\(x\\) can be modeled by a Poisson distribution\n\\[\np(x) = \\frac{e^{-\\lambda} \\lambda^{x}}{x !}\n\\tag{1}\\]\nwhere \\(\\lambda\\) is the rate of eruptions per year. Using Equation 1, the probability of an eruption in the next \\(t\\) years can be calculated.\n\n\n\nTable 1: Recent historic eruptions on La Palma\n\n\n\n\n\nName\nYear\n\n\n\n\nCurrent\n2021\n\n\nTeneguía\n1971\n\n\nNambroque\n1949\n\n\nEl Charco\n1712\n\n\nVolcán San Antonio\n1677\n\n\nVolcán San Martin\n1646\n\n\nTajuya near El Paso\n1585\n\n\nMontaña Quemada\n1492\n\n\n\n\n\n\nTable 1 summarises the eruptions recorded since the colonization of the islands by Europeans in the late 1400s.\n\n\n\n\n\n\nFigure 2: Map of La Palma\n\n\n\nLa Palma is one of the west most islands in the Volcanic Archipelago of the Canary Islands (Figure 2).\n\n\n\n\n\n\n\n\n\nFigure 3: Locations of earthquakes on La Palma since 2017.\n\n\n\n\n\nSource: Data Screening\nFigure 3 shows the location of recent Earthquakes on La Palma."
+  },
+  {
+    "objectID": "index.html#sec-data-methods",
+    "href": "index.html#sec-data-methods",
+    "title": "La Palma Earthquakes",
+    "section": "2 Data & Methods",
+    "text": "2 Data & Methods"
+  },
+  {
+    "objectID": "index.html#conclusion",
+    "href": "index.html#conclusion",
+    "title": "La Palma Earthquakes",
+    "section": "3 Conclusion",
+    "text": "3 Conclusion"
+  },
+  {
+    "objectID": "index.html#references",
+    "href": "index.html#references",
+    "title": "La Palma Earthquakes",
+    "section": "References",
+    "text": "References\n\n\nMarrero, José, Alicia García, Manuel Berrocoso, Ángeles Llinares, Antonio Rodríguez-Losada, and R. Ortiz. 2019. “Strategies for the Development of Volcanic Hazard Maps in Monogenetic Volcanic Fields: The Example of La Palma (Canary Islands).” Journal of Applied Volcanology 8 (July). https://doi.org/10.1186/s13617-019-0085-5."
+  }
+]
