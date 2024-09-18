@@ -3,7 +3,7 @@ project:
 
 
 website:
-  title: "AI"
+  title: "Uday's AI Blog"
   navbar:
     right:
       - icon: github
