@@ -371,7 +371,13 @@ Name: label, dtype: int64</code></pre>
 </section>
 <section id="creating-a-neural-network" class="level2">
 <h2 class="anchored" data-anchor-id="creating-a-neural-network">Creating a Neural Network</h2>
-<p>Some of the rules to follow while writing/training your Neural Network. - Start with a simple architecture - We are doing a text classification so, we can try a single layer LSTM. - Use well studied default parameters like activation = relu, optimizer = adam, initialization = he for relu and Glorot for sigmoid/tanh. To know more about this, please read <a href="https://www.deeplearning.ai/ai-notes/initialization/">this</a> blog. - Fix the random seeds so that we can reproduce the initializations/results to tune our models. - You have to fix all the random seeds in your model. - Normalize the input data.</p>
+<p>Some of the rules to follow while writing/training your Neural Network.</p>
+<ul>
+<li>Start with a simple architecture - We are doing a text classification so, we can try a single layer LSTM.</li>
+<li>Use well studied default parameters like activation = relu, optimizer = adam, initialization = he for relu and Glorot for sigmoid/tanh. To know more about this, please read <a href="https://www.deeplearning.ai/ai-notes/initialization/">this</a> blog.</li>
+<li>Fix the random seeds so that we can reproduce the initializations/results to tune our models. - You have to fix all the random seeds in your model.</li>
+<li>Normalize the input data.</li>
+</ul>
 <p>I am writing a simple LSTM model by following all the above rules.</p>
 <div id="cell-18" class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">##LSTM</span></span>
@@ -852,7 +858,13 @@ Epoch 10, Train Loss: 0.111988, Mean batch Train Loss: 0.111988, AUC: 1.00000, M
 <p>I trained the model for 10 epochs and my loss is decreasing and AUC of train data became 1(overfit). But some times it may not overfit to the model. If it is not overfitting, there may be so many reasons like code written to create the model is incorrect, the model is not capable of learning the data, learning problems like vanishing or exploding gradients and many more. I will discuss these problems below and These problems may occur even while training with total data.</p>
 <section id="check-whether-forward-propagation-is-correct-or-not" class="level3">
 <h3 class="anchored" data-anchor-id="check-whether-forward-propagation-is-correct-or-not">Check whether forward propagation is correct or not</h3>
-<p>while training NN, we will use the vectorizing implementations of data manipulation. If we did any mistake in these implementations, our training process will give bad results. We can verify this with a simple hack using <code>back prop dependency</code>. Below are the steps to do. - Take a few data points. Here I am taking 5 data points. You can get it from the data or you can generate random data with the same shape. - do forward propagation on the model we created with the above batch data. - write a loss function that takes the true values, predicted values and returns loss as sum of the i^th data point output where i less than 5. I am using 3. - do the back prop and check the gradients with respect to the input data points. If you are getting non zero gradients only for i-th data point, your forward propagation is right otherwise, there is some error in the forward propagation and you have to debug the code to check the error.</p>
+<p>while training NN, we will use the vectorizing implementations of data manipulation. If we did any mistake in these implementations, our training process will give bad results. We can verify this with a simple hack using <code>back prop dependency</code>. Below are the steps to do.</p>
+<ul>
+<li>Take a few data points. Here I am taking 5 data points. You can get it from the data or you can generate random data with the same shape.</li>
+<li>do forward propagation on the model we created with the above batch data.</li>
+<li>write a loss function that takes the true values, predicted values and returns loss as sum of the i^th data point output where i less than 5. I am using 3.</li>
+<li>do the back prop and check the gradients with respect to the input data points. If you are getting non zero gradients only for i-th data point, your forward propagation is right otherwise, there is some error in the forward propagation and you have to debug the code to check the error.</li>
+</ul>
 <p>In the implementation below, I have written basic implementation, not included any tensorboard/metrics and there is no need for those as well.</p>
 <blockquote class="blockquote">
 <p>Note: Gradient won’t flow through the embedding layer so you will get None gradients if you calculate the gradient with of loss with respect to the input. If you have the embedding layer at starting, please remove the embedding layer and give the input directly to the next layer. It is very easy to do because This layer can only be used as the first layer in a model.</p>
@@ -928,34 +940,94 @@ True</code></pre>
 </font></section><font size="3" face="Calibri">
 <section id="what-to-do-when-loss-explodes" class="level3">
 <h3 class="anchored" data-anchor-id="what-to-do-when-loss-explodes">What to do when Loss Explodes</h3>
-<p>while training NN, you may get NaN/inf loss becuase of large or small values. Below are some causes - Numerical stability issues. - Check the multiplications, if you are multiplying so many tensors at once, apply log and make it to addition. - Check for the division operation. any zero division is happening or not. Try to add a small constant like 1e-12 to the denominator. - Check the softmax function. If your vocab size if very large, try not to use the softmax function. calculate the loss based on the logits. - If the updates to the weights are very large, you may get numerical instability and it may explode. - Check for the Learning rate. If the learning rate is high, you may get this problem as well. - Check for the exploding gradient problem. In tensorboard, you can visualize the gradient histograms and you can check the problem. If gradients are exploding, try to clip the gradients. You can apply <code>tf.linalg.normalize</code> or <code>tf.clip_by_value</code> to your gradients after getting gradients from the GradientTape. - It may occur because of a poor choice of loss function i.e.&nbsp;allowing the calculation of large error values. - It may occur because of the poor data preparation i.e.&nbsp;allowing large differences in the target variables.</p>
+<p>while training NN, you may get NaN/inf loss becuase of large or small values. Below are some causes</p>
+<ul>
+<li>Numerical stability issues.
+<ul>
+<li>Check the multiplications, if you are multiplying so many tensors at once, apply log and make it to addition.</li>
+<li>Check for the division operation. any zero division is happening or not. Try to add a small constant like 1e-12 to the denominator.</li>
+<li>Check the softmax function. If your vocab size if very large, try not to use the softmax function. calculate the loss based on the logits.</li>
+</ul></li>
+<li>If the updates to the weights are very large, you may get numerical instability and it may explode.
+<ul>
+<li>Check for the Learning rate. If the learning rate is high, you may get this problem as well.</li>
+<li>Check for the exploding gradient problem. In tensorboard, you can visualize the gradient histograms and you can check the problem. If gradients are exploding, try to clip the gradients. You can apply <code>tf.linalg.normalize</code> or <code>tf.clip_by_value</code> to your gradients after getting gradients from the GradientTape.</li>
+</ul></li>
+<li>It may occur because of a poor choice of loss function i.e.&nbsp;allowing the calculation of large error values.</li>
+<li>It may occur because of the poor data preparation i.e.&nbsp;allowing large differences in the target variables.</li>
+</ul>
 </section>
 <section id="what-to-do-when-loss-increases" class="level3">
 <h3 class="anchored" data-anchor-id="what-to-do-when-loss-increases">What to do when loss Increases</h3>
-<p>while training NN, our loss may increase some times. Below are some causes - Check for the Learning rate. If the learning rate is high, you may get this problem as well. - Check for the wrong loss function. Especially sign of the loss function. - Activation functions applying over wrong dimensions. (you can find this out using the point number 1(checking forward propagation is correct or not)</p>
+<p>while training NN, our loss may increase some times. Below are some causes</p>
+<ul>
+<li>Check for the Learning rate. If the learning rate is high, you may get this problem as well.</li>
+<li>Check for the wrong loss function. Especially sign of the loss function.</li>
+<li>Activation functions applying over wrong dimensions. (you can find this out using the point number 1(checking forward propagation is correct or not)</li>
+</ul>
 </section>
 <section id="what-to-do-when-loss-oscillate" class="level3">
 <h3 class="anchored" data-anchor-id="what-to-do-when-loss-oscillate">What to do when loss Oscillate</h3>
-<p>while training NN, our loss may oscillate. Below are some causes - Check for the Learning rate. If the learning rate is high, you may get this problem as well. - Sometimes it may occur because of the exploding gradient problem. so check for that one as well. You can check this using the <code>Tensorboard</code>. - It may occur due to data pairing issues/data corruption. We already discussed this. so make sure to get the proper data.</p>
+<p>while training NN, our loss may oscillate. Below are some causes</p>
+<ul>
+<li>Check for the Learning rate. If the learning rate is high, you may get this problem as well.</li>
+<li>Sometimes it may occur because of the exploding gradient problem. so check for that one as well. You can check this using the <code>Tensorboard</code>.</li>
+<li>It may occur due to data pairing issues/data corruption. We already discussed this. so make sure to get the proper data.</li>
+</ul>
 </section>
 <section id="what-to-do-when-loss-is-constant" class="level3">
 <h3 class="anchored" data-anchor-id="what-to-do-when-loss-is-constant">What to do when loss is constant</h3>
-<p>while training NN, our loss constant. Below are some causes - If the updates to the weights are very low, you may end up in the same position. - Check for the learning rate. If the learning rate is low, our weights won’t update much so you may get this problem. - Check for Vanishing Gradient problem. In <code>Tensorboard</code>, you can visualize the gradient histograms and you can check the problem. - You can solve this by changing the activations to relu/leaky relu. - You can add skip connections to an easier flow of gradients. - If you have long sequences in RNN, you can divide into smaller ones and train with stateful LSTM’s(Truncated Back prop) - Better weight initialization may reduce this. - Too much regularization may also cause this. - If you are using Relu activation, it may occur due to the dead neurons. - Incorrect inputs to the loss function. I already discussed this while discussing the loss functions.</p>
+<p>while training NN, our loss constant. Below are some causes</p>
+<ul>
+<li>If the updates to the weights are very low, you may end up in the same position.
+<ul>
+<li>Check for the learning rate. If the learning rate is low, our weights won’t update much so you may get this problem.</li>
+<li>Check for Vanishing Gradient problem. In <code>Tensorboard</code>, you can visualize the gradient histograms and you can check the problem.
+<ul>
+<li>You can solve this by changing the activations to relu/leaky relu.</li>
+<li>You can add skip connections to an easier flow of gradients.</li>
+<li>If you have long sequences in RNN, you can divide into smaller ones and train with stateful LSTM’s(Truncated Back prop)</li>
+<li>Better weight initialization may reduce this.</li>
+</ul></li>
+</ul></li>
+<li>Too much regularization may also cause this.</li>
+<li>If you are using Relu activation, it may occur due to the dead neurons.</li>
+<li>Incorrect inputs to the loss function. I already discussed this while discussing the loss functions.</li>
+</ul>
 </section>
 <section id="what-if-we-get-memory-errors" class="level3">
 <h3 class="anchored" data-anchor-id="what-if-we-get-memory-errors">What if we get memory Errors</h3>
-<p>while training NN, many people face the memory exhaust errors because of the computing constraints.<br>
-- If you are getting GPU memory exhaust error, try to reduce the batch size and train the neural network. - If your data doesn’t fit into the RAM you have, Try to create a data pipeline using <code>tf.data</code> or <code>Keras/Python Data Generators</code> and load the batchwise data. My personal choice is to use <code>tf.data</code> pipelines. Please check <a href="https://www.tensorflow.org/guide/data">this</a> blog to know more about it. - Please try to check for the duplicate operations like creating multiple models, storing temporary variables in the GPU memory.</p>
+<p>while training NN, many people face the memory exhaust errors because of the computing constraints.</p>
+<ul>
+<li>If you are getting GPU memory exhaust error, try to reduce the batch size and train the neural network.</li>
+<li>If your data doesn’t fit into the RAM you have, Try to create a data pipeline using <code>tf.data</code> or <code>Keras/Python Data Generators</code> and load the batchwise data. My personal choice is to use <code>tf.data</code> pipelines. Please check <a href="https://www.tensorflow.org/guide/data">this</a> blog to know more about it.</li>
+<li>Please try to check for the duplicate operations like creating multiple models, storing temporary variables in the GPU memory.</li>
+</ul>
 </section>
 <section id="what-if-we-underfit-to-the-data" class="level3">
 <h3 class="anchored" data-anchor-id="what-if-we-underfit-to-the-data">What if we Underfit to the data</h3>
-<p>some suggestions to make in decreasing order of priority<br>
-- Make your model bigger - Reduce/Remove regularization(L1/L2/Dropout) if any. - Do error analysis. based on this try to change the preprocessing/data if needed. - Read technical papers and choose the state of the art models. - Tune hyperparameters - Add custom features if needed.</p>
+<p>some suggestions to make in decreasing order of priority</p>
+<ul>
+<li>Make your model bigger</li>
+<li>Reduce/Remove regularization(L1/L2/Dropout) if any.</li>
+<li>Do error analysis. based on this try to change the preprocessing/data if needed.</li>
+<li>Read technical papers and choose the state of the art models.</li>
+<li>Tune hyperparameters</li>
+<li>Add custom features if needed.</li>
+</ul>
 </section>
 <section id="what-if-we-overfit-to-the-data" class="level3">
 <h3 class="anchored" data-anchor-id="what-if-we-overfit-to-the-data">What if we Overfit to the data</h3>
-<p>some suggestions to make in decreasing order of priority<br>
-- Add more training data - Add normalization layers(BN, layer norm) - Add data augmentation - Increase regularization - Do error analysis. based on this try to change the preprocessing/data if needed. - Choose a different model - Tune hyperparameters</p>
+<p>some suggestions to make in decreasing order of priority</p>
+<ul>
+<li>Add more training data</li>
+<li>Add normalization layers(BN, layer norm)</li>
+<li>Add data augmentation</li>
+<li>Increase regularization</li>
+<li>Do error analysis. based on this try to change the preprocessing/data if needed.</li>
+<li>Choose a different model</li>
+<li>Tune hyperparameters</li>
+</ul>
 <p><font size="3" face="Calibri"> You can check some of my other blogs at <a href="https://udibhaskar.github.io/ml_blog/">this</a> link. This is my <a href="https://www.linkedin.com/in/uday-paila-1a496a84/">LinkedIn</a> and <a href="https://github.com/UdiBhaskar">GitHub</a></font></p><font size="3" face="Calibri">
 
 
