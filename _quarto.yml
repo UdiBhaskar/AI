@@ -3,14 +3,12 @@ project:
 
 
 website:
-  title: "test"
-  # navbar:
-  #   right:
-  #     - about.qmd
-  #     - icon: github
-  #       href: https://github.com/
-  #     - icon: twitter
-  #       href: https://twitter.com
+  title: "AI"
+  navbar:
+    right:
+      - icon: github
+        href: https://github.com/UdiBhaskar
+
 format:
   html:
     theme: cosmo
