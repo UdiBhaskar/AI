@@ -16,36 +16,8 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "La Palma Earthquakes",
+    "title": "AI",
     "section": "",
-    "text": "import matplotlib.pyplot as plt\nimport numpy as np\neruptions = [1492, 1585, 1646, 1677, 1712, 1949, 1971, 2021]\n\n\nplt.figure(figsize=(6, 1))\nplt.eventplot(eruptions, lineoffsets=0, linelengths=0.1, color='black')\nplt.gca().axes.get_yaxis().set_visible(False)\nplt.ylabel('')\nplt.show()\n\n\n\n\n\n\n\nFigure 1: Timeline of recent earthquakes on La Palma\n\n\n\n\n\n\navg_years_between_eruptions = np.mean(np.diff(eruptions[:-1]))\navg_years_between_eruptions\n\nBased on data up to and including 1971, eruptions on La Palma happen every 79.8 years on average.\nStudies of the magma systems feeding the volcano, such as Marrero et al. (2019), have proposed that there are two main magma reservoirs feeding the Cumbre Vieja volcano; one in the mantle (30-40km depth) which charges and in turn feeds a shallower crustal reservoir (10-20km depth).\nEight eruptions have been recorded since the late 1400s (Figure 1).\nData and methods are discussed in Section 2.\nLet \\(x\\) denote the number of eruptions in a year. Then, \\(x\\) can be modeled by a Poisson distribution\n\\[\np(x) = \\frac{e^{-\\lambda} \\lambda^{x}}{x !}\n\\tag{1}\\]\nwhere \\(\\lambda\\) is the rate of eruptions per year. Using Equation 1, the probability of an eruption in the next \\(t\\) years can be calculated.\n\n\n\nTable 1: Recent historic eruptions on La Palma\n\n\n\n\n\nName\nYear\n\n\n\n\nCurrent\n2021\n\n\nTeneguía\n1971\n\n\nNambroque\n1949\n\n\nEl Charco\n1712\n\n\nVolcán San Antonio\n1677\n\n\nVolcán San Martin\n1646\n\n\nTajuya near El Paso\n1585\n\n\nMontaña Quemada\n1492\n\n\n\n\n\n\nTable 1 summarises the eruptions recorded since the colonization of the islands by Europeans in the late 1400s.\n\n\n\n\n\n\nFigure 2: Map of La Palma\n\n\n\nLa Palma is one of the west most islands in the Volcanic Archipelago of the Canary Islands (Figure 2).\n\n\n\n\n\n\n\n\n\nFigure 3: Locations of earthquakes on La Palma since 2017.\n\n\n\n\n\nSource: Data Screening\nFigure 3 shows the location of recent Earthquakes on La Palma."
-  },
-  {
-    "objectID": "index.html#introduction",
-    "href": "index.html#introduction",
-    "title": "La Palma Earthquakes",
-    "section": "",
-    "text": "import matplotlib.pyplot as plt\nimport numpy as np\neruptions = [1492, 1585, 1646, 1677, 1712, 1949, 1971, 2021]\n\n\nplt.figure(figsize=(6, 1))\nplt.eventplot(eruptions, lineoffsets=0, linelengths=0.1, color='black')\nplt.gca().axes.get_yaxis().set_visible(False)\nplt.ylabel('')\nplt.show()\n\n\n\n\n\n\n\nFigure 1: Timeline of recent earthquakes on La Palma\n\n\n\n\n\n\navg_years_between_eruptions = np.mean(np.diff(eruptions[:-1]))\navg_years_between_eruptions\n\nBased on data up to and including 1971, eruptions on La Palma happen every 79.8 years on average.\nStudies of the magma systems feeding the volcano, such as Marrero et al. (2019), have proposed that there are two main magma reservoirs feeding the Cumbre Vieja volcano; one in the mantle (30-40km depth) which charges and in turn feeds a shallower crustal reservoir (10-20km depth).\nEight eruptions have been recorded since the late 1400s (Figure 1).\nData and methods are discussed in Section 2.\nLet \\(x\\) denote the number of eruptions in a year. Then, \\(x\\) can be modeled by a Poisson distribution\n\\[\np(x) = \\frac{e^{-\\lambda} \\lambda^{x}}{x !}\n\\tag{1}\\]\nwhere \\(\\lambda\\) is the rate of eruptions per year. Using Equation 1, the probability of an eruption in the next \\(t\\) years can be calculated.\n\n\n\nTable 1: Recent historic eruptions on La Palma\n\n\n\n\n\nName\nYear\n\n\n\n\nCurrent\n2021\n\n\nTeneguía\n1971\n\n\nNambroque\n1949\n\n\nEl Charco\n1712\n\n\nVolcán San Antonio\n1677\n\n\nVolcán San Martin\n1646\n\n\nTajuya near El Paso\n1585\n\n\nMontaña Quemada\n1492\n\n\n\n\n\n\nTable 1 summarises the eruptions recorded since the colonization of the islands by Europeans in the late 1400s.\n\n\n\n\n\n\nFigure 2: Map of La Palma\n\n\n\nLa Palma is one of the west most islands in the Volcanic Archipelago of the Canary Islands (Figure 2).\n\n\n\n\n\n\n\n\n\nFigure 3: Locations of earthquakes on La Palma since 2017.\n\n\n\n\n\nSource: Data Screening\nFigure 3 shows the location of recent Earthquakes on La Palma."
-  },
-  {
-    "objectID": "index.html#sec-data-methods",
-    "href": "index.html#sec-data-methods",
-    "title": "La Palma Earthquakes",
-    "section": "2 Data & Methods",
-    "text": "2 Data & Methods"
-  },
-  {
-    "objectID": "index.html#conclusion",
-    "href": "index.html#conclusion",
-    "title": "La Palma Earthquakes",
-    "section": "3 Conclusion",
-    "text": "3 Conclusion"
-  },
-  {
-    "objectID": "index.html#references",
-    "href": "index.html#references",
-    "title": "La Palma Earthquakes",
-    "section": "References",
-    "text": "References\n\n\nMarrero, José, Alicia García, Manuel Berrocoso, Ángeles Llinares, Antonio Rodríguez-Losada, and R. Ortiz. 2019. “Strategies for the Development of Volcanic Hazard Maps in Monogenetic Volcanic Fields: The Example of La Palma (Canary Islands).” Journal of Applied Volcanology 8 (July). https://doi.org/10.1186/s13617-019-0085-5."
+    "text": "No matching items"
   }
 ]
