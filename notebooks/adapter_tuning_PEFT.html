@@ -165,7 +165,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/adapters_1.png" title="https://arxiv.org/pdf/1902.00751" class="img-fluid figure-img"></p>
-<figcaption>adapters</figcaption>
+<figcaption>Adapter Design</figcaption>
 </figure>
 </div>
 <ul>
@@ -176,23 +176,31 @@ ul.task-list li input[type="checkbox"] {
 <li>By setting <code>m &lt;&lt; d</code>, we limit the number of parameters added per task.</li>
 </ul>
 </section>
-<section id="results" class="level1">
-<h1>Results</h1>
+<section id="adapter-fusion" class="level1">
+<h1>Adapter Fusion</h1>
+<ul>
+<li>Sequential fine-tuning and multi-task learning are methods aiming to incorporate knowledge from multiple tasks; however, they suffer from catastrophic forgetting and difficulties in dataset balancing.</li>
+<li>AdapterFusion addresses this by non-destructively composing multiple tasks. Rather than overwriting model parameters for each task, the method fuses information from different adapters to solve a new task.</li>
+<li>algorithm:
+<ul>
+<li>train a adapter layers for each task seperatly.</li>
+<li>AdapterFusion learns a weighted combination of previously trained all adapters as shown in below figure.</li>
+</ul></li>
+</ul>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/adapters_2.png" title="https://arxiv.org/pdf/1902.00751" class="img-fluid figure-img"></p>
-<figcaption>adapters</figcaption>
+<p><img src="images/adapters_4.png" title="https://arxiv.org/pdf/2005.00247" class="img-fluid figure-img"></p>
+<figcaption>Adapter Fusion</figcaption>
 </figure>
 </div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/adapters_3.png" title="https://arxiv.org/pdf/1902.00751" class="img-fluid figure-img"></p>
-<figcaption>adapters</figcaption>
-</figure>
-</div>
+<ul>
+<li>This fusion mechanism allows the model to leverage knowledge from all tasks in a modular fashion.</li>
+<li>The adapters themselves remain independent, and the fusion weights can be tuned to emphasize adapters that are most relevant for a specific task.</li>
+</ul>
 <p>Reference:</p>
 <ol type="1">
 <li>https://arxiv.org/pdf/1902.00751</li>
+<li>https://arxiv.org/pdf/2005.00247</li>
 </ol>
 
 
