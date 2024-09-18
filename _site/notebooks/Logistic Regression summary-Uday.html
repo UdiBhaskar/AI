@@ -254,14 +254,22 @@ p_{i,c} = \frac{1}{1+e^{-(W_{C}X_{i}+b)}}
 <p><br></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://i.imgur.com/CU7Ry7c.png" title="Hyperplanes for different values of C" class="img-fluid figure-img"></p>
+<p><img src="images/planes_lr.png" title="Hyperplanes for different values of C" class="img-fluid figure-img"></p>
 <figcaption>Hyperplane</figcaption>
 </figure>
 </div>
 <p><br></p>
 <ul>
-<li><p>In the above figure, we are getting similar classification results for all C greater than 0.5 but, increasing the C value reduces the regularization strength and increases the magnitude of weight vector values. You can check that in the below figure. <img src="https://i.imgur.com/lk3IqXu.png" title="Weight Vector values for each C" class="img-fluid" alt="weightvector"></p></li>
-<li><p>If two hyperplanes are giving similar results, get the best hyperplane based on the magnitude of weights. low weight is better because it gives more regularization and it won’t overestimate the probability value.</p></li>
+<li>In the above figure, we are getting similar classification results for all C greater than 0.5 but, increasing the C value reduces the regularization strength and increases the magnitude of weight vector values. You can check that in the below figure.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/cvalues_LR.png" title="Weight Vector values for each C" class="img-fluid figure-img"></p>
+<figcaption>weightvector</figcaption>
+</figure>
+</div>
+<ul>
+<li>If two hyperplanes are giving similar results, get the best hyperplane based on the magnitude of weights. low weight is better because it gives more regularization and it won’t overestimate the probability value.</li>
 </ul>
 <blockquote class="blockquote">
 <p>Important: Let’s take two planes. plane1 is 1.5f1 + 2.4f2 + 1 = 0, plane2 is 4.5f1 + 7.2f2 + 3 = 0. Both planes are mathematically same, only weight values are changed, but for a query point (0, 0), plane1 will give a probability of 0.73 and plane2 will give a probability of 0.95. But, the distance of the point (0,0) from both planes is the same that is 0.35 only. so large weights lead to overestimation of probabilities even though they are near to the plane.</p>
