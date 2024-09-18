@@ -1,14 +1,17 @@
 project:
-  type: manuscript
+  type: website
 
+
+website:
+  title: "test"
+  # navbar:
+  #   right:
+  #     - about.qmd
+  #     - icon: github
+  #       href: https://github.com/
+  #     - icon: twitter
+  #       href: https://twitter.com
 format:
   html:
-    toc: true
-    comments:
-      hypothesis: true
-  docx: default
-  jats: default
-  agu-pdf: default
-
-
-
+    theme: cosmo
+    css: styles.css
