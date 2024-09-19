@@ -70,6 +70,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -162,12 +191,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="adapter-design" class="level1">
 <h1>Adapter Design</h1>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/adapters_1.png" title="https://arxiv.org/pdf/1902.00751" class="img-fluid figure-img"></p>
-<figcaption>Adapter Design</figcaption>
-</figure>
-</div>
+<p><img alt="Adapter Design" src="images/adapters_1.png" width="400" style="display: block; margin-left: auto; margin-right: auto;"></p>
 <ul>
 <li>Each adapter consists of a <code>down-projection</code>, a <code>non-linearity</code>, and an <code>up-projection</code> as shown in above image</li>
 <li>The down-projection reduces the dimensionality of the intermediate layer activations, and the up-projection restores it, thus keeping the adapter small and efficient.</li>
@@ -187,23 +211,44 @@ ul.task-list li input[type="checkbox"] {
 <li>AdapterFusion learns a weighted combination of previously trained all adapters as shown in below figure.</li>
 </ul></li>
 </ul>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/adapters_4.png" title="https://arxiv.org/pdf/2005.00247" class="img-fluid figure-img"></p>
-<figcaption>Adapter Fusion</figcaption>
-</figure>
-</div>
+<p><img alt="Adapter Fusion" src="images/adapters_4.png" width="300" style="display: block; margin-left: auto; margin-right: auto;"></p>
 <ul>
 <li>This fusion mechanism allows the model to leverage knowledge from all tasks in a modular fashion.</li>
 <li>The adapters themselves remain independent, and the fusion weights can be tuned to emphasize adapters that are most relevant for a specific task.</li>
 </ul>
+<h1 style="color:#4169E1;">
+COMPACTER (Compact Adapter)
+</h1>
+<p>COMPACTER is combination of Hypercomplex Adapter Layers using Kronecker Product, Low-Rank Approximation, shared weights across adapters.</p>
+<section id="kronecker-product" class="level5">
+<h5 class="anchored" data-anchor-id="kronecker-product">Kronecker Product:</h5>
+<p><img alt="Kronecker Product" src="images/adapters_5.png" width="400" style="display: block; margin-left: auto; margin-right: auto;"></p>
+</section>
+<section id="hypercomplex-adapter-layers" class="level5">
+<h5 class="anchored" data-anchor-id="hypercomplex-adapter-layers">Hypercomplex Adapter Layers:</h5>
+<p>In the adapter layers, previously we used the FC layers as below</p>
+<p><span class="math display">\[\begin{align}
+y = Wx + b \quad \text{where } W \text{ is } (m \times d)\\
+\end{align}\]</span></p>
+<p><code>W</code> will be replaced using <code>Kronecker Product of two matrices</code> like below</p>
+<p><span class="math display">\[\begin{align}
+W = \sum_{i=1}^n A_i \otimes B_i \\
+A_i \text{ is } (n \times n) \quad , \quad B_i \text{ is } (\frac{m}{n} \times \frac{d}{n}) \\
+\end{align}\]</span></p>
+<p><code>n</code> is user defined hyper-parameter. d, m are must divisible by n</p>
+<p>Below is the illustration of Hypercomplex Adapter Layers. It is sum of Kronecker Product of matrices <span class="math inline">\(A_i\)</span>, <span class="math inline">\(B_i\)</span> and here n = 2, d = 8, m = 6</p>
+<p><img alt="PHS" src="images/adapters_6.jpeg" width="600" style="display: block; margin-left: auto; margin-right: auto;"></p>
+<p>No of parameters to tune here is reduced compared to FC layer as shown above.</p>
+<p>This layer is generalization of the FC layer via the hyperparameter n.&nbsp; - when n = 1, <span class="math inline">\(W = A_1 \otimes B_1 = aB_1\)</span> (a is the single element of the 1×1 matrix), B1 matrix is of shape <span class="math inline">\(m \times d\)</span> - Since learning a and <span class="math inline">\(B_1\)</span> separately is equivalent to learning their multiplication jointly, scalar a can be dropped, which is learning the single weight matrix in an FC layer</p>
 <p>Reference:</p>
 <ol type="1">
 <li>https://arxiv.org/pdf/1902.00751</li>
 <li>https://arxiv.org/pdf/2005.00247</li>
+<li>https://arxiv.org/pdf/2102.08597</li>
 </ol>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
