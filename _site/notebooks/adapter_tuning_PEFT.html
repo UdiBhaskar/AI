@@ -181,16 +181,17 @@ window.Quarto = {
 
 
 <p>Large pre-trained language models (e.g., BERT, GPT) have revolutionized NLP tasks by leveraging massive amounts of unlabeled data. Transfer learning involves first pre-training these models on large corpora and then fine-tuning them on smaller, task-specific datasets. However, fine-tuning all the parameters of a model like BERT is computationally expensive and inefficient, particularly when there are multiple downstream tasks</p>
-<section id="adapter-layers" class="level1">
-<h1>Adapter Layers</h1>
+<h1 style="color:#4169E1;">
+Adapter Layers
+</h1>
 <ul>
 <li><code>Adapters</code> are small, task-specific layers added between the layers of the pre-trained model.</li>
 <li>Instead of fine-tuning all the parameters of the model, only the parameters of the adapter layers are updated during training for a specific task. The rest of the model’s parameters remain frozen.</li>
 <li>This method significantly reduces the number of trainable parameters and, thus, the computational cost of fine-tuning.</li>
 </ul>
-</section>
-<section id="adapter-design" class="level1">
-<h1>Adapter Design</h1>
+<h1 style="color:#4169E1;">
+Basic Adapter Design
+</h1>
 <p><img alt="Adapter Design" src="images/adapters_1.png" width="400" style="display: block; margin-left: auto; margin-right: auto;"></p>
 <ul>
 <li>Each adapter consists of a <code>down-projection</code>, a <code>non-linearity</code>, and an <code>up-projection</code> as shown in above image</li>
@@ -199,9 +200,9 @@ window.Quarto = {
 <li>so The total number of parameters added per layer, including biases, is <code>2md + d + m</code>.</li>
 <li>By setting <code>m &lt;&lt; d</code>, we limit the number of parameters added per task.</li>
 </ul>
-</section>
-<section id="adapter-fusion" class="level1">
-<h1>Adapter Fusion</h1>
+<h1 style="color:#4169E1;">
+Adapter Fusion
+</h1>
 <ul>
 <li>Sequential fine-tuning and multi-task learning are methods aiming to incorporate knowledge from multiple tasks; however, they suffer from catastrophic forgetting and difficulties in dataset balancing.</li>
 <li>AdapterFusion addresses this by non-destructively composing multiple tasks. Rather than overwriting model parameters for each task, the method fuses information from different adapters to solve a new task.</li>
@@ -220,13 +221,14 @@ window.Quarto = {
 COMPACTER (Compact Adapter)
 </h1>
 <p>COMPACTER is combination of Hypercomplex Adapter Layers using Kronecker Product, Low-Rank Approximation, shared weights across adapters.</p>
-<section id="kronecker-product" class="level5">
-<h5 class="anchored" data-anchor-id="kronecker-product">Kronecker Product:</h5>
-<p><img alt="Kronecker Product" src="images/adapters_5.png" width="400" style="display: block; margin-left: auto; margin-right: auto;"></p>
-</section>
-<section id="hypercomplex-adapter-layers" class="level5">
-<h5 class="anchored" data-anchor-id="hypercomplex-adapter-layers">Hypercomplex Adapter Layers:</h5>
-<p>In the adapter layers, previously we used the FC layers as below</p>
+<h4 style="color:#4682B4;" class="anchored">
+Kronecker Product:
+</h4>
+<p><img alt="Kronecker Product" src="images/adapters_5.png" width="700" style="display: block; margin-left: auto; margin-right: auto;"></p>
+<h4 style="color:#4682B4;" class="anchored">
+Hypercomplex Adapter Layers:
+</h4>
+<p>In the adapter layers, previously it used the FC layers as below</p>
 <p><span class="math display">\[\begin{align}
 y = Wx + b \quad \text{where } W \text{ is } (m \times d)\\
 \end{align}\]</span></p>
@@ -239,7 +241,22 @@ A_i \text{ is } (n \times n) \quad , \quad B_i \text{ is } (\frac{m}{n} \times \
 <p>Below is the illustration of Hypercomplex Adapter Layers. It is sum of Kronecker Product of matrices <span class="math inline">\(A_i\)</span>, <span class="math inline">\(B_i\)</span> and here n = 2, d = 8, m = 6</p>
 <p><img alt="PHS" src="images/adapters_6.jpeg" width="600" style="display: block; margin-left: auto; margin-right: auto;"></p>
 <p>No of parameters to tune here is reduced compared to FC layer as shown above.</p>
-<p>This layer is generalization of the FC layer via the hyperparameter n.&nbsp; - when n = 1, <span class="math inline">\(W = A_1 \otimes B_1 = aB_1\)</span> (a is the single element of the 1×1 matrix), B1 matrix is of shape <span class="math inline">\(m \times d\)</span> - Since learning a and <span class="math inline">\(B_1\)</span> separately is equivalent to learning their multiplication jointly, scalar a can be dropped, which is learning the single weight matrix in an FC layer</p>
+<p>This layer is generalization of the FC layer via the hyperparameter n.&nbsp;</p>
+<ul>
+<li>when n = 1, <span class="math inline">\(W = A_1 \otimes B_1 = aB_1\)</span> (a is the single element of the 1×1 matrix), B1 matrix is of shape <span class="math inline">\(m \times d\)</span></li>
+<li>Since learning a and <span class="math inline">\(B_1\)</span> separately is equivalent to learning their multiplication jointly, scalar a can be dropped, which is learning the single weight matrix in an FC layer</li>
+</ul>
+<h4 style="color:#4682B4;" class="anchored">
+Low Rank Parameterization and Sharing information across adapters
+</h4>
+<ul>
+<li><span class="math inline">\(A_i\)</span> are shared parameters that are common across all adapter layers while <span class="math inline">\(B_i\)</span> are adapter-specific parameters.</li>
+<li>assumption is the model can also be effectively adapted by learning transformations in a low-rank subspace and <span class="math inline">\(B_i\)</span> is divided into multiplication of two low rank matrices</li>
+</ul>
+<p><span class="math display">\[\begin{align}
+W = \sum_{i=1}^n A_i \otimes B_i = \sum_{i=1}^n A_i \otimes (s_i t_i)\\
+s_i \text{ is } (\frac{m}{n} \times r) \quad t_i \text{ is } (r \times \frac{d}{n}) \quad \text{matrix}
+\end{align}\]</span></p>
 <p>Reference:</p>
 <ol type="1">
 <li>https://arxiv.org/pdf/1902.00751</li>
@@ -248,8 +265,6 @@ A_i \text{ is } (n \times n) \quad , \quad B_i \text{ is } (\frac{m}{n} \times \
 </ol>
 
 
-</section>
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
