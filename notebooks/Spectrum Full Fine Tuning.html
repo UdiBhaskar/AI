@@ -191,8 +191,18 @@ Singular Value Decomposition (SVD)
 <p><span class="math display">\[\begin{align}
 W = U \Sigma V^T
 \end{align}\]</span></p>
-<p>Where: - <span class="math inline">\(W\)</span> is the input matrix - <span class="math inline">\(U\)</span> is an orthogonal matrix - <span class="math inline">\(\Sigma\)</span> is a diagonal matrix containing the singular values (<span class="math inline">\(\sigma_i\)</span>) of <span class="math inline">\(W\)</span> - <span class="math inline">\(V^T\)</span> is the transpose of an orthogonal matrix <span class="math inline">\(V\)</span></p>
-<p>When applied to the weight matrix of neural networks, - It helps us identify the most important patterns in the weight matrix by looking at the largest singular values (dominant patterns/directions in weight matrix). Least important patterns (noise) are represented by smaller singular values. - It can help us understand the underlying structure of the model’s weights and potentially identify which parts of the model are most important. - We need to be careful on interpreting larger singular values as important patterns, as they might be caused by overfitting. - Removing the smallest singular values (noise) might suppress factual knowledge or impact the learning of more complex patterns, which can lead to catastrophic forgetting.</p>
+<ul>
+<li><span class="math inline">\(W\)</span> is the input matrix</li>
+<li><span class="math inline">\(U\)</span> is an orthogonal matrix</li>
+<li><span class="math inline">\(\Sigma\)</span> is a diagonal matrix containing the singular values (<span class="math inline">\(\sigma_i\)</span>) of <span class="math inline">\(W\)</span></li>
+<li><span class="math inline">\(V^T\)</span> is the transpose of an orthogonal matrix <span class="math inline">\(V\)</span></li>
+</ul>
+<p>When applied to the weight matrix of neural networks,</p>
+<ul>
+<li>It helps us identify the most important patterns in the weight matrix by looking at the largest singular values (dominant patterns/directions in weight matrix). Least important patterns (noise) are represented by smaller singular values.</li>
+<li>It can help us understand the underlying structure of the model’s weights and potentially identify which parts of the model are most important.</li>
+<li>Removing the smallest singular values (noise) might suppress factual knowledge or impact the learning of more complex patterns, which can lead to catastrophic forgetting.</li>
+</ul>
 <h1 style="color:#4169E1;">
 Eigan Value Decomposition (EVD)
 </h1>
@@ -200,7 +210,11 @@ Eigan Value Decomposition (EVD)
 <p><span class="math display">\[\begin{align}
 W = Q \Lambda Q^T
 \end{align}\]</span></p>
-<p>where: - <span class="math inline">\(W\)</span> is the input matrix - <span class="math inline">\(Q\)</span> is an orthogonal matrix - <span class="math inline">\(\Lambda\)</span> is a diagonal matrix containing the eigan values (<span class="math inline">\(\lambda_i\)</span>) of <span class="math inline">\(W\)</span></p>
+<ul>
+<li><span class="math inline">\(W\)</span> is the input matrix</li>
+<li><span class="math inline">\(Q\)</span> is an orthogonal matrix</li>
+<li><span class="math inline">\(\Lambda\)</span> is a diagonal matrix containing the eigan values (<span class="math inline">\(\lambda_i\)</span>) of <span class="math inline">\(W\)</span></li>
+</ul>
 <h1 style="color:#4169E1;">
 Relation between SVD and EVD
 </h1>
@@ -225,7 +239,11 @@ Marchenko-Pastur Law
 <h1 style="color:#4169E1;">
 Signal to Noise Ratio (SNR)
 </h1>
-<p>from above, maximum threshold for the singular values of <span class="math inline">\(W.W^T\)</span> is $ _{thresh} = (1 + )$. - Removing normalization factor <span class="math inline">\(\frac{1}{\sqrt{n}}\)</span> to ensure numerical stability. - Calculating <span class="math inline">\(\sigma\)</span> using IQR instead of std to account for potential skewness and kurtosis.</p>
+<p>from above, maximum threshold for the singular value random matrix is <span class="math inline">\(\sigma_{\text{thresh}} = \sigma \left(1 - \sqrt{\frac{m}{n}}\right)\)</span></p>
+<ul>
+<li>Removing normalization factor <span class="math inline">\(\frac{1}{\sqrt{n}}\)</span> to ensure numerical stability.</li>
+<li>Calculating <span class="math inline">\(\sigma\)</span> using IQR instead of std to account for potential skewness and kurtosis.</li>
+</ul>
 <p>lets take <span class="math inline">\(S\)</span> contains the singular values of <span class="math inline">\(W\)</span>, then SNR is given by:</p>
 <p><span class="math display">\[\begin{align}
 SNR = \frac{\text{count of singular values in S} \gt \sigma_{thresh}}{\text{count of singular values in S} \leq \sigma_{thresh}}
@@ -242,11 +260,7 @@ Layer Selection
 <li>For each layer, calculate SVD of weight matrix <span class="math inline">\(W\)</span> and then calculate SNR and normalize it.</li>
 <li>select top <span class="math inline">\(k\%\)</span> layers with highest SNR. <code>K</code> is a hyperparameter.</li>
 </ul>
-<p>Reference:</p>
-<ol type="1">
-<li>https://arxiv.org/abs/2406.06623</li>
-<li>https://huggingface.co/blog/anakin87/spectrum</li>
-</ol>
+<p>Reference: 1. https://arxiv.org/abs/2406.06623 2. https://huggingface.co/blog/anakin87/spectrum</p>
 
 
 
